@@ -1,0 +1,97 @@
+﻿<MudDialog>
+	<DialogContent>
+		<MudGrid>
+			<MudItem xs="6">
+				<MudPaper Elevation="16" Class="pa-1">
+				<MudGrid>
+					<MudItem xs="12">
+						<MudText Typo="Typo.h4">Full Package</MudText> <MudTooltip>includes boots, skis, and poles</MudTooltip>
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Typo="Typo.h6">Sport</MudText>
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Typo="Typo.h6">$55 per/day</MudText>
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Typo="Typo.h6">Performance</MudText>
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Typo="Typo.h6">$70 per/day</MudText>
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Typo="Typo.h6">Demo</MudText>
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Typo="Typo.h6">$85 per/day</MudText>
+					</MudItem>
+				</MudGrid>
+				</MudPaper>
+			</MudItem>
+			<MudItem xs="6">
+				<MudPaper Elevation="16" Class="pa-1">
+				<MudGrid>
+					<MudItem xs="12">
+						<MudText Typo="Typo.h4">Ski Only</MudText> <MudTooltip>includes skis and poles only</MudTooltip>
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Typo="Typo.h6">Sport</MudText>
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Typo="Typo.h6">$45 per/day</MudText>
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Typo="Typo.h6">Performance</MudText>
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Typo="Typo.h6">$65 per/day</MudText>
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Typo="Typo.h6">Demo</MudText>
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Typo="Typo.h6">$70 per/day</MudText>
+					</MudItem>
+				</MudGrid>
+				</MudPaper>
+			</MudItem>
+			<MudItem xs="12">
+				<MudPaper Elevation="16" Class="pa-1">
+				<MudGrid>
+					<MudItem xs="12">
+							<MudText Typo="Typo.h4">Snowboards</MudText><MudTooltip>beginner/intermediate level boards</MudTooltip>
+					</MudItem>
+					<MudItem xs="5">
+						<MudText Typo="Typo.h6">Snowboard Only</MudText>
+					</MudItem>
+					<MudItem xs="5">
+						<MudText Typo="Typo.h6">$30 per/day</MudText>
+					</MudItem>
+					<MudItem xs="5">
+						<MudText Typo="Typo.h6">Snowboard + Boots</MudText>
+					</MudItem>
+					<MudItem xs="5">
+						<MudText Typo="Typo.h6">$45 per/day</MudText>
+					</MudItem>
+				</MudGrid>
+				</MudPaper>
+			</MudItem>
+		</MudGrid>
+	</DialogContent>
+	<DialogActions>
+		<MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+	</DialogActions>
+</MudDialog>
+
+@code {
+
+	[CascadingParameter]
+	MudDialogInstance MudDialog { get; set; }
+
+
+	void Submit()
+	{
+		MudDialog.Close(DialogResult.Ok(true));
+	}
+
+}

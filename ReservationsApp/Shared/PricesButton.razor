@@ -1,0 +1,22 @@
+﻿@inject IDialogService DialogService
+
+<MudPaper Outlined="true" Elevation="16" Style="background: inherit">
+
+	<MudText Class="d-flex align-center justify-center" Typo="Typo.button" @onclick="OpenPrices" Style="color: black; outline-color: white">
+		<MudIconButton Icon="@Icons.Material.Filled.AttachMoney" ButtonType="ButtonType.Button" Style="outline-color: white; color: black" @onclick="OpenPrices"/>
+		Rental Prices
+		<MudSpacer/>
+	</MudText>
+</MudPaper>
+
+
+
+
+@code {
+
+	public void OpenPrices()
+	{
+		var dialog = DialogService.Show<Pricing_dialog>("Prices DO NOT include online discount. Discount applied at checkout");
+		var result = dialog.Result;
+	}
+}

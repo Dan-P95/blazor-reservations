@@ -1,21 +1,267 @@
 ﻿@page "/"
+@using System.Reflection.Metadata.Ecma335
+@using ReservationsApp.Data
+@using System.Diagnostics
 @inject IConfiguration Config
+
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, Dan!</h1>
+<style>
+	body {
+		background-image: url(/background1.jpeg);
+		background-size: cover;
+		background-repeat: no-repeat;
+		
+	}
+</style>
 
 
-<p class="h4">
-	Default String: @defaultConnection
-</p>
+<MudGrid>
+	<MudItem xs="@spacer1"></MudItem>
+	<MudItem xs="6">
+		<MudContainer Class="mt-12" MaxWidth="MaxWidth.Medium">
+			<MudItem xs="10">
+				<MudPaper Square="false" Class="pa-4" Elevation="16" Outlined="true" Style="@($"background:#FFEBEE;")">
+					<MudTabs @ref="mainMudTabs" Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+						<MudTabPanel Text="1. Billing">
+							<MudGrid>
+								<MudItem xs="12">
+									<MudText Typo="Typo.h5" Align="Align.Center">Account Information</MudText>
+									<MudDivider/>
+								</MudItem>
+								<MudItem xs="12">
+									<MudButton OnClick="FillData">FILL</MudButton>
+								</MudItem>
+								<MudItem xs="12">
+									<AddOwner CurrentOwner="CurrentOwner" AddNewOwnerCallback="AddNewOwner"></AddOwner>
+								</MudItem>
+							</MudGrid>
+						</MudTabPanel>
+						<MudTabPanel Text="2. Add Skiers" Disabled="secondTabDisabled" @ref="secondTabPanel">
+							<MudGrid>
+								<MudItem xs="12">
+									<MudText Typo="Typo.h5" Align="Align.Center">Skier Information
+									</MudText>
+									<MudDivider/>
+								</MudItem>
+								<MudItem>
+									<AddSkier CurrentSkier="CurrentSkier" AddNewSkierCallback="AddNewSkier"/>
+								</MudItem>
+								<MudItem xs="10">
+									
+								</MudItem>
+								<MudItem xs="2" >
+									<MudButton OnClick="enableThirdTab" Variant="Variant.Filled" Color="Color.Primary" Class="align-items: flex-end;">Continue</MudButton>
+								</MudItem>
+							</MudGrid>
+						</MudTabPanel>
+						<MudTabPanel Text="3. Finalize Reservation" Disabled="thirdTabDisabled" @ref="thirdTabPanel">
+							<MudGrid>
+								<MudItem xs="12">
+									<MudText Typo="Typo.h5" Align="Align.Center">
+										<Checkout CurrentOwner="CurrentOwner">
+
+										</Checkout>
+									</MudText>
+								</MudItem>
+								
+								<MudItem xs="12">
+									
+								</MudItem>
+							</MudGrid>
+						</MudTabPanel>
+					</MudTabs>
+				</MudPaper>
+			</MudItem>
+		</MudContainer>
+	</MudItem>
+	<MudItem xs="4">
+		<MudContainer Class="mt-12" MaxWidth="MaxWidth.Large">
+			<MudPaper Class="m-4">
+				<div hidden="@secondTabDisabled">
+					<MudText Typo="Typo.h6" Class="pa-2"><b>@CurrentOwner.FirstName @CurrentOwner.LastName's Skiers</b></MudText>
+					<MudText></MudText>
+					<MudDynamicTabs AddTabIcon="false"  Border="true" Outlined="true" PanelClass="px-4 py-6" ApplyEffectsToContainer="true" @ref="secondaryMudTab" Position="Position.Left" CloseTab="DeleteSkierCallback">
+						@if (CurrentOwner.SkierList.Count > 0)
+						{
+							@foreach (var skier in CurrentOwner.SkierList)
+							{
+								<MudTabPanel ID="skier.Name" Text="@skier.Name">
+									<MudGrid>
+										<MudItem xs="6">
+											<MudPaper Class="pa-2" Outlined="true">
+												<MudText Align="Align.Start">Age: @skier.Age</MudText>
+											</MudPaper>
+											
+										</MudItem>
+										<MudItem xs="6">
+										<MudPaper Class="pa-2" Outlined="true">
+											<MudText>Height: @skier.Height</MudText>
+											
+										</MudPaper>
+										</MudItem>
+										<MudItem xs="6">
+											<MudPaper Class="pa-2" Outlined="true">
+												<MudText>Weight: @skier.Weight</MudText>
+											</MudPaper>
+											
+										</MudItem>
+										<MudItem xs="6">
+											<MudPaper Class="pa-2" Outlined="true">
+												<MudText>Type: @skier.SkierType</MudText>
+												
+											</MudPaper>
+										</MudItem>
+										<MudItem xs="6">
+											<MudPaper Class="pa-2" Outlined="true">
+											<MudText>Shoe Size: @skier.ShoeSize</MudText>
+											</MudPaper>
+											
+										</MudItem>
+										<MudItem xs="6">
+											<MudPaper Class="pa-2" Outlined="true">
+												@if (skier.Insurance == false)
+												{
+													<MudText>Insurance: No</MudText>
+												}
+												else
+												{
+													<MudText>Insurance: Yes</MudText>
+												}
+											</MudPaper>
+											
+										</MudItem>
+										<MudItem xs="12">
+											<MudPaper Class="pa-2" Outlined="true">
+												<MudText>
+													Package: @skier.SkiPackage
+												</MudText>
+											</MudPaper>
+										</MudItem>
+									</MudGrid>
+								</MudTabPanel>
+							}
+						}
+					</MudDynamicTabs>
+				</div>
+			</MudPaper>
+		</MudContainer>
+	</MudItem>
+
+</MudGrid>
 
 
 @code
 {
-	private string defaultConnection = "";
+	//[Inject] public Services services { get; set; }
+
+	public Owner CurrentOwner = new Owner();
+	private List<Skier> currentSkiers = new List<Skier>();
+	public Skier CurrentSkier = new Skier();
+	private DateRange dateRange = new DateRange(DateTime.Now.Date, DateTime.Now.AddDays(5).Date);
+
+	public AddSkier AddSkierComponent = new AddSkier();
+	public MudTabs mainMudTabs;
+	public MudTabPanel secondTabPanel;
+	public MudTabPanel thirdTabPanel;
+	public MudDynamicTabs secondaryMudTab;
+
+	public int spacer1 = 3;
+	public bool secondTabDisabled = true;
+	public bool thirdTabDisabled = true;
+	public IMask emailMask = RegexMask.Email();
+
+	public List<Skier> skierList = new List<Skier>();
+	bool success;
+	bool alert;
+	bool worked;
+	int groupId;
+	string message = string.Empty;
+	int itemId;
+
+	public void AddNewSkier()
+	{
+		UpdateSkierList();
+		CurrentSkier = new Skier();
+	}
+	public void AddNewOwner()
+	{
+		enableSecondTab();
+	}
+
+	public void DeleteSkier(string name)
+	{
+		var thisSkier = CurrentOwner.SkierList.SingleOrDefault(n => Equals(n.Name, name));
+
+		var skierList = CurrentOwner.SkierList;
+
+		if (thisSkier != null)
+		{
+			skierList.Remove(thisSkier);
+			
+		}
+		CurrentOwner.SkierList = skierList;
+		StateHasChanged();
+
+	}
+
+	void DeleteSkierCallback(MudTabPanel panel) => DeleteSkier((string)panel.ID);
+
+	public void UpdateSkierList()
+	{
+
+		skierList.Add(new Skier()
+		{
+			Name = CurrentSkier.Name,
+			Age = CurrentSkier.Age,
+			Height = CurrentSkier.Height,
+			Insurance = CurrentSkier.Insurance,
+			ShoeSize = CurrentSkier.ShoeSize,
+			SkierType = CurrentSkier.SkierType,
+			Weight = CurrentSkier.Weight,
+			SkiOrBoard = CurrentSkier.SkiOrBoard,
+			SkiPackage = CurrentSkier.SkiPackage,
+			DailyRentalPrice = CurrentSkier.DailyRentalPrice
+		});
+
+		CurrentOwner.SkierList = skierList;
+	}
+
+	void enableSecondTab()
+	{
+		spacer1 = 1;
+		secondTabDisabled = false;
+		secondTabPanel.Disabled = false;
+		mainMudTabs.ActivatePanel(1);
+
+	}
+
+	public void enableThirdTab()
+	{
+		thirdTabPanel.Disabled = false;
+		thirdTabDisabled = false;
+		mainMudTabs.ActivatePanel(2);
+	}
+	
 	protected override void OnInitialized()
 	{
-		defaultConnection = Config.GetConnectionString("Default") ?? "unknown";
+		base.OnInitialized();
+		CurrentOwner.SkierList = currentSkiers;
+
+	}
+
+	public void FillData()
+	{
+		CurrentOwner.FirstName = "bob";
+		CurrentOwner.LastName = "sagat";
+		CurrentOwner.Phone = "42";
+		CurrentOwner.Email = "email";
+		CurrentOwner.Address = "address";
+		CurrentOwner.State = "idaho";
+		CurrentOwner.City = "city";
+		CurrentOwner.Zipcode = "83333";
+		CurrentOwner.SkiDateRange = new DateRange(DateTime.Now, DateTime.Now);
+		StateHasChanged();
 	}
 }

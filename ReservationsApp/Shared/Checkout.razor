@@ -1,0 +1,189 @@
+﻿@using ReservationsApp.Data
+@using System.Runtime.Serialization
+@inject NavigationManager _navigationManager
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+	<MudPaper Class="pa-4"> 
+		<MudGrid>
+			<MudItem xs="7">
+				<MudText Typo="Typo.h5" GutterBottom="true">Reservation Details</MudText>
+				<MudDivider />
+				<MudGrid Spacing="2">
+					<MudItem xs="12">
+						<MudText Class="pa-1" Align="Align.Left">Account Name: <b>@CurrentOwner.FirstName @CurrentOwner.LastName</b></MudText>
+						<MudDivider />
+					</MudItem>
+					<MudItem xs="12">
+						<MudText Align="Align.Left">Phone Number: <b>@CurrentOwner.Phone</b></MudText>
+						<MudDivider />
+					</MudItem>
+					<MudItem xs="12">
+						<MudText Align="Align.Left">Address: <b>@CurrentOwner.Address</b></MudText>
+						<MudDivider/>
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Align="Align.Left">State: <b>@CurrentOwner.State</b></MudText>
+						<MudDivider />
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Align="Align.Left">City: <b>@CurrentOwner.City</b></MudText>
+						<MudDivider />
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Align="Align.Left">Postal Code: <b>@CurrentOwner.Zipcode</b></MudText>
+						<MudDivider />
+					</MudItem>
+					<MudItem xs="12">
+						<MudText Align="Align.Left">Email: <b>@CurrentOwner.Email</b></MudText>
+						<MudDivider />
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Align="Align.Left">Arrival Date: @CurrentOwner.ArrivalDate.ToString("MM/dd/yyyy")</MudText>
+						<MudDivider />
+					</MudItem>
+					<MudItem xs="6">
+						<MudText Align="Align.Left">Rental Dates: @skiStart.ToString("MM/dd/yyyy") <b>To</b> @skiEnd.ToString("MM/dd/yyyy") </MudText>
+						<MudDivider />
+					</MudItem>
+				</MudGrid>
+			</MudItem>
+			<MudItem xs="5">
+				<MudText Typo="Typo.h5" GutterBottom="true">Estimated Prices</MudText>
+				<MudPaper Class="d-flex flex-column" Style="height: 100%;" Outlined="true">
+					<MudList Clickable="false">
+						@foreach (var skier in CurrentOwner.SkierList)
+						{
+							@if (skier.SkiOrBoard == "board")
+							{
+								<MudListItem Icon="@Icons.Material.Filled.Snowboarding">
+									<div class="d-flex">
+										<MudText>@skier.Name</MudText>
+										<MudText Inline="true" Class="ml-auto">@skier.TotalRentalPrice.ToString("C0")</MudText>
+									</div>
+								</MudListItem>
+							}
+							else
+							{
+								<MudListItem Icon="@Icons.Material.Filled.DownhillSkiing">
+									<div class="d-flex">
+										<MudText>@skier.Name</MudText>
+										<MudText Inline="true" Class="ml-auto">@skier.TotalRentalPrice.ToString("C0")</MudText>
+									</div>
+								</MudListItem>
+							}
+						}
+					</MudList>
+					<div class="mt-auto">
+						<MudDivider/>
+						<div class="d-flex px-4">
+							<MudText>subtotal:</MudText>
+							<MudText Typo="Typo.caption" Class="ml-auto">@total.ToString("C0")</MudText>
+						</div>
+						<div class="d-flex px-4">
+							<MudText>online discount</MudText>
+							<MudText Typo="Typo.caption" Class="ml-auto">-@less.ToString("C0")</MudText>
+						</div>
+						<div class="d-flex px-4">
+							<MudText>total*</MudText>
+							<MudText Typo="Typo.subtitle1" Class="ml-auto"><b>@onlineTotal.ToString("C0")*</b></MudText>
+						</div>
+					</div>
+				</MudPaper>
+			</MudItem>
+		</MudGrid>
+	</MudPaper>
+	<MudGrid >
+		<MudItem xs="12">
+			<MudText Class="mt-8">
+				* Please note, total price is an estimation. Actual price may very depending on a number of factors including sales tax. Please contact us if you have questions regarding the pricing. 
+			</MudText>
+		</MudItem>
+		<MudItem xs="12">
+			<MudPaper>
+				<MudTextField T="string" Lines="5" Label="Questions, Comments, or Concerns you would like us to know about">
+
+				</MudTextField>
+			</MudPaper>
+		</MudItem>
+		<MudItem xs="12">
+			<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Size="Size.Large" Color="Color.Primary" Class="ml-auto" OnClick="ReloadPage">Submit Reservation</MudButton>
+		</MudItem>
+		<MudItem xs="12">
+			<MudText>@successMessage</MudText>
+		</MudItem>
+	</MudGrid>
+	
+</MudContainer>
+
+@code {
+[Parameter]
+public Owner CurrentOwner { get; set; }
+
+	string successMessage = String.Empty;
+	int total = 0;
+	int less = 0;
+	int onlineTotal = 0;
+	DateTime skiStart = DateTime.Now;
+	DateTime skiEnd = DateTime.Now;
+
+
+	protected override void OnParametersSet()
+	{
+
+	}
+
+	protected override void OnAfterRender(bool firstRender)
+	{
+		base.OnAfterRender(firstRender);
+		total = 0;
+		less = 0;
+		onlineTotal = 0;
+
+		SetTotal();
+		StateHasChanged();
+	}
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		skiStart = (DateTime)CurrentOwner.SkiDateRange.Start;
+		skiEnd = (DateTime)CurrentOwner.SkiDateRange.End;
+		SetTotal();
+	}
+
+	public void SetTotal()
+	{
+		TimeSpan difference = (TimeSpan)(CurrentOwner.SkiDateRange.End - CurrentOwner.SkiDateRange.Start);
+		var skiDays = difference.Days;
+		skiDays += 1;
+		foreach (var skier in CurrentOwner.SkierList)
+		{
+			skier.TotalRentalPrice = (skiDays * skier.DailyRentalPrice);
+			total += skier.TotalRentalPrice;
+		}
+		onlineTotal = GetTotal(total);
+
+	}
+
+	public int GetTotal(int subtotal)
+	{
+		var returnTotal = 0;
+		less = subtotal / 10;
+		returnTotal = subtotal - less;
+		return returnTotal;
+	}
+
+	public void ChangeSucessMessage()
+	{
+		successMessage = "Reservation sent successfully";
+	}
+
+	public void ReloadPage()
+	{
+		ChangeSucessMessage();
+		Thread.Sleep(1000);
+		_navigationManager.NavigateTo(_navigationManager.Uri, true);
+	}
+
+
+}

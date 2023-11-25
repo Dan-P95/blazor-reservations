@@ -4,8 +4,13 @@
     flex-direction: column;
 }
 
-main {
-    flex: 1;
+.main {
+    background-image: url(/background1.jpeg);
+    
+}
+
+.page-background-class {
+    background-image: url(/background1.jpeg)
 }
 
 .sidebar {

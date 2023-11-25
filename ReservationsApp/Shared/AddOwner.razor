@@ -1,0 +1,116 @@
+﻿@using ReservationsApp.Data
+
+<EditForm Model="@CurrentOwner" OnValidSubmit="OnValidSubmit">
+	<DataAnnotationsValidator/>
+	<MudGrid>
+		<MudItem xs="12">
+			<MudCard>
+				<MudCardContent>
+					<MudGrid>
+						<MudItem xs="6">
+							<MudTextField Label="First Name"
+							              @bind-Value="CurrentOwner.FirstName" For="@(() => CurrentOwner.FirstName)"/>
+						</MudItem>
+						<MudItem xs="6">
+							<MudTextField Label="Last Name" Class="mt-2"
+							              @bind-Value="CurrentOwner.LastName" For="@(() => CurrentOwner.LastName)"/>
+						</MudItem>
+						<MudItem xs="6">
+							<MudTextField HelperText="10 Digit Phone Number" Mask="@(new PatternMask("000 000 0000"))" Label="Phone" Class="mt-2"
+							              @bind-Value="CurrentOwner.Phone" For="@(() => CurrentOwner.Phone)"/>
+						</MudItem>
+						<MudItem xs="6">
+							<MudTextField Mask="@emailMask" Label="Email" Class="mt-2"
+							              @bind-Value="CurrentOwner.Email" For="@(() => CurrentOwner.Email)"/>
+						</MudItem>
+						<MudItem xs="12">
+							<MudTextField Label="Address"
+							              @bind-Value="CurrentOwner.Address" For="@(() => CurrentOwner.Address)"/>
+						</MudItem>
+						<MudItem xs="4">
+							<MudSelect T="string" Label="State" @bind-Value="CurrentOwner.State" @bind-SelectedValue="CurrentOwner.State" Required="true" RequiredError="Select State">
+								@foreach (var state in states)
+								{
+									<MudSelectItem T="string" Value="@state">@state</MudSelectItem>
+								}
+							</MudSelect>
+						</MudItem>
+						<MudItem xs="4">
+							<MudTextField Label="City" Class="mt-1"
+							              @bind-Value="CurrentOwner.City" For="@(() => CurrentOwner.City)"/>
+						</MudItem>
+						<MudItem xs="4">
+							<MudTextField Mask="@(new PatternMask("000000000"))" Label="Zip/Postal Code" Class="mt-1"
+							              @bind-Value="CurrentOwner.Zipcode" For="@(() => CurrentOwner.Zipcode)"/>
+						</MudItem>
+						<MudItem xs="4">
+							<MudDatePicker Label="Arrival Date"/>
+						</MudItem>
+						<MudItem xs="8">
+							<MudDateRangePicker Label="Ski Dates" @bind-DateRange="@CurrentOwner.SkiDateRange" PlaceholderStart="First Ski Day" PlaceholderEnd="Last Ski Day" Required="true" RequiredError="Choose Ski Dates"/>
+						</MudItem>
+					</MudGrid>
+				</MudCardContent>
+				<MudCardActions>
+					<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Continue</MudButton>
+				</MudCardActions>
+				<MudCardContent>
+					@if (alert)
+					{
+						<MudAlert Dense="true" Severity="Severity.Error">@message</MudAlert>
+					}
+					@if (worked)
+					{
+						<MudAlert Dense="true" Severity="Severity.Success">@message</MudAlert>
+					}
+				</MudCardContent>
+			</MudCard>
+		</MudItem>
+	</MudGrid>
+
+</EditForm>
+
+@code {
+
+	[Parameter]
+	public Owner CurrentOwner { get; set; }
+
+	[Parameter]
+	public EventCallback AddNewOwnerCallback { get; set; }
+
+	private void InvokeAddNewOwnerCallback() => AddNewOwnerCallback.InvokeAsync();
+
+	public IMask emailMask = RegexMask.Email();
+	bool success;
+	bool alert;
+	bool worked;
+	string message = string.Empty;
+
+	private void OnValidSubmit(EditContext context)
+	{
+	//CurrentSkier.SkierType = skierType;
+	//CurrentSkier.Insurance = insurance;
+
+		InvokeAddNewOwnerCallback();
+
+	}
+	
+	private string[] states =
+	{
+		"Alabama", "Alaska", "American Samoa", "Arizona",
+		"Arkansas", "California", "Colorado", "Connecticut",
+		"Delaware", "District of Columbia", "Federated States of Micronesia",
+		"Florida", "Georgia", "Guam", "Hawaii", "Idaho",
+		"Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
+		"Louisiana", "Maine", "Marshall Islands", "Maryland",
+		"Massachusetts", "Michigan", "Minnesota", "Mississippi",
+		"Missouri", "Montana", "Nebraska", "Nevada",
+		"New Hampshire", "New Jersey", "New Mexico", "New York",
+		"North Carolina", "North Dakota", "Northern Mariana Islands", "Ohio",
+		"Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico",
+		"Rhode Island", "South Carolina", "South Dakota", "Tennessee",
+		"Texas", "Utah", "Vermont", "Virgin Island", "Virginia",
+		"Washington", "West Virginia", "Wisconsin", "Wyoming",
+	};
+
+}

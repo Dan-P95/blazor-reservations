@@ -1,19 +1,29 @@
-﻿@inherits LayoutComponentBase
+﻿
+@inherits LayoutComponentBase
 
-<PageTitle>ReservationsApp</PageTitle>
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<MudLayout>
+	<MudAppBar Style="@($"background:#f31515; color:#fff;")">
+		<MudIconButton Icon="@Icons.Material.Filled.DownhillSkiing" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+		<MudText > PK'S Ski and Sports | Reservation Portal</MudText>
+		<MudSpacer/>
+		<PricesButton />
+	</MudAppBar>
+	
+	<MudMainContent>
+		@Body
+	</MudMainContent>
+</MudLayout>
+@code {
+	bool _drawerOpen = true;
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
+	void DrawerToggle()
+	{
+		_drawerOpen = !_drawerOpen;
+	}
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+	
+}

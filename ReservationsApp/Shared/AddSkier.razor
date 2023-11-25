@@ -1,0 +1,210 @@
+﻿@using ReservationsApp.Data
+
+@inject IDialogService DialogService
+
+
+<EditForm Model="@CurrentSkier" OnValidSubmit="OnValidSubmit" OnInvalidSubmit="OnInvalidSubmit">
+	<DataAnnotationsValidator />
+	<MudGrid>
+		<MudItem xs="12">
+			<MudCard>
+				<MudCardContent>
+					<MudGrid>
+						<MudItem xs="12">
+							<MudTextField Label="Full Name"
+							              @bind-Value="CurrentSkier.Name" For="@(() => CurrentSkier.Name)"/>
+						</MudItem>
+						<MudItem xs="4">
+							<MudTextField Label="Height" Class="mt-2"
+							              @bind-Value="CurrentSkier.Height" For="@(() => CurrentSkier.Height)"/>
+						</MudItem>
+						<MudItem xs="4">
+							<MudTextField Mask="@(new PatternMask("0000"))" Label="Weight" Class="mt-2"
+							              @bind-Value="CurrentSkier.Weight" For="@(() => CurrentSkier.Weight)"/>
+						</MudItem>
+						<MudItem xs="4">
+							<MudNumericField HideSpinButtons="true" @bind-Value="CurrentSkier.Age" Label="Age" Variant="Variant.Text" Min="0" Max="100"/>
+						</MudItem>
+						<MudItem xs="3">
+							<MudNumericField HideSpinButtons="true" @bind-Value="CurrentSkier.ShoeSize" Label="Shoe/Boot Size" Variant="Variant.Text" Min="0" Max="50"/>
+						</MudItem>
+						<MudItem xs="4">
+							<MudText Typo="Typo.caption">Damage Insurance</MudText>
+							<MudRadioGroup @bind-SelectedOption="CurrentSkier.Insurance" Required="true" RequiredError="Choose one">
+								<MudRadio Option="@(true)">Yes</MudRadio>
+								<MudRadio Option="@(false)">No</MudRadio>
+							</MudRadioGroup>
+						</MudItem>
+						<MudItem xs="5">
+							<MudText Typo="Typo.caption">Ski or Snowboard</MudText>
+							<MudRadioGroup T="string" @bind-SelectedOption="CurrentSkier.SkiOrBoard" Required="true" RequiredError="Choose one">
+								<MudRadio T="string" Option="@("ski")">Ski</MudRadio>
+								<MudRadio T="string" Option="@("board")">Snowboard</MudRadio>
+							</MudRadioGroup>
+						</MudItem>
+						<MudItem xs="12">
+							<MudText Typo="Typo.caption">Skier Type</MudText> <MudIcon Icon="@Icons.Material.Filled.Help" @onclick="SkierTypeHelper"></MudIcon>
+							<MudText Typo="Typo.subtitle1" Style=@($"background:#FFEBEE;") @onclick="SkierTypeHelper"> @skierTypeHelper </MudText>
+							<MudRadioGroup  @bind-SelectedOption="CurrentSkier.SkierType" Required="true" RequiredError="Choose one">
+								<MudRadio Option="@(1)">I</MudRadio>
+								<MudRadio Option="@(2)">II</MudRadio>
+								<MudRadio Option="@(3)">III</MudRadio>
+							</MudRadioGroup>
+						</MudItem>
+						<MudItem xs="12">
+							@if (CurrentSkier.SkiOrBoard == "ski")
+							{
+								<MudText Typo="Typo.caption">Ski Package <MudIcon Icon="@Icons.Material.Filled.Help"/></MudText>
+								<MudRadioGroup @onclick="SetPrice" @bind-SelectedOption="CurrentSkier.SkiPackage" Required="true" RequiredError="Choose one">
+									<MudRadio Option="@("sport")">Sport</MudRadio>
+									<MudRadio Option="@("performance")">Performance</MudRadio>
+									<MudRadio Option="@("demo")">Demo</MudRadio>
+								</MudRadioGroup>
+							}
+							@if (CurrentSkier.SkiOrBoard == "board")
+							{
+								<MudText Typo="Typo.caption">Snowboard Package<MudIcon Icon="@Icons.Material.Filled.Help"/></MudText>
+								<MudRadioGroup @onclick="SetPrice" @bind-SelectedOption="CurrentSkier.SkiPackage" Required="true" RequiredError="Choose one" Validation="CurrentSkier.SkiPackage">
+									<MudRadio Option="@("board only")">Snowboard Only</MudRadio>
+									<MudRadio Option="@("board package")">Snowboard and Boots</MudRadio>
+								</MudRadioGroup>
+							}
+						</MudItem>
+						<MudItem xs="4">
+							<PricesButton />
+						</MudItem>
+						
+					</MudGrid>
+				</MudCardContent>
+				<MudCardActions Class="d-flex justify-center">
+					<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" DisableElevation="true" Style="@($"background:#f31515; color:#fff;")" Size="Size.Large" Class="mt-2">Add Skier</MudButton>
+				</MudCardActions>
+				<MudCardContent>
+					@if (alert)
+					{
+						<MudAlert Dense="true" Severity="Severity.Error">@message</MudAlert>
+					}
+					@if (worked)
+					{
+						<MudAlert Dense="true" Severity="Severity.Success">@message</MudAlert>
+					}
+				</MudCardContent>
+			</MudCard>
+		</MudItem>
+		
+	</MudGrid>
+</EditForm>
+
+
+@code {
+	[Parameter]
+	public Skier CurrentSkier { get; set; }
+	[Parameter]
+	public EventCallback AddNewSkierCallback { get; set; }
+
+	private void InvokeAddNewSkierCallback() =>  AddNewSkierCallback.InvokeAsync();
+
+	MudRadioGroup<int> typeRadioGroup;
+	bool success;
+	bool alert;
+	bool worked;
+	int skierType;
+	string message = string.Empty;
+	string skierTypeHelper = string.Empty;
+	int itemId;
+	bool insurance;
+	int price;
+
+
+	public List<Skier> currentSkierList = new List<Skier>();
+
+
+
+	public void SetPrice()
+	{
+		
+		if (CurrentSkier.SkiPackage == "sport")
+		{
+			price = 55;
+		}
+		if (CurrentSkier.SkiPackage == "performance")
+		{
+			price = 70;
+		}
+		if (CurrentSkier.SkiPackage == "demo")
+		{
+			price = 85;
+		}
+		if (CurrentSkier.SkiPackage == "board only")
+		{
+			price = 30;
+		}
+		if (CurrentSkier.SkiPackage == "board package")
+		{
+			price = 45;
+		}
+		CurrentSkier.DailyRentalPrice = price;
+		
+	}
+
+	protected override void OnParametersSet()
+	{
+		CurrentSkier.SkiOrBoard = "ski";
+		base.OnParametersSet();
+
+	}
+
+
+	public void SkierTypeHelper()
+	{
+		var dialog = DialogService.Show<Helper_dialog>("Skier Type" );
+		var result = dialog.Result;
+	}
+
+	private void OnInvalidSubmit(EditContext context)
+	{
+		if (CurrentSkier.SkierType == 0)
+		{
+			skierTypeHelper = "Please choose skier type. Click here for more information.";
+			alert = true;
+
+		}
+		else
+		{
+			skierTypeHelper = "";
+		}
+
+		if (string.IsNullOrEmpty(CurrentSkier.SkiPackage))
+		{
+			alert = true;
+			message = "Choose Skier Package";
+		}
+		else
+		{
+			message = "";
+		}
+		
+		
+	}
+
+	private void OnValidSubmit(EditContext context)
+	{
+
+		if (CurrentSkier.SkierType == 0)
+		{
+			skierTypeHelper = "Please choose skier type. Click here for more information.";
+			alert = true;
+		}
+		else
+		{
+			CurrentSkier.DailyRentalPrice = price;
+			alert = false;
+			skierTypeHelper = "";
+			StateHasChanged();
+			InvokeAddNewSkierCallback();
+		}
+		
+
+	}
+
+}
