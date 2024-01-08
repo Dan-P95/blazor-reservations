@@ -3,31 +3,31 @@
 <EditForm Model="@CurrentOwner" OnValidSubmit="OnValidSubmit">
 	<DataAnnotationsValidator/>
 	<MudGrid>
-		<MudItem xs="12">
+		<MudItem Class="flex-initial" xs="12">
 			<MudCard>
 				<MudCardContent>
 					<MudGrid>
-						<MudItem xs="6">
+						<MudItem xs="12" md="4">
 							<MudTextField Label="First Name"
 							              @bind-Value="CurrentOwner.FirstName" For="@(() => CurrentOwner.FirstName)"/>
 						</MudItem>
-						<MudItem xs="6">
+						<MudItem xs="12" md="4">
 							<MudTextField Label="Last Name" Class="mt-2"
 							              @bind-Value="CurrentOwner.LastName" For="@(() => CurrentOwner.LastName)"/>
 						</MudItem>
-						<MudItem xs="6">
+						<MudItem xs="12" md="4">
 							<MudTextField HelperText="10 Digit Phone Number" Mask="@(new PatternMask("000 000 0000"))" Label="Phone" Class="mt-2"
 							              @bind-Value="CurrentOwner.Phone" For="@(() => CurrentOwner.Phone)"/>
 						</MudItem>
-						<MudItem xs="6">
+						<MudItem xs="12" md="4">
 							<MudTextField Mask="@emailMask" Label="Email" Class="mt-2"
 							              @bind-Value="CurrentOwner.Email" For="@(() => CurrentOwner.Email)"/>
 						</MudItem>
-						<MudItem xs="12">
+						<MudItem xs="12" md="4">
 							<MudTextField Label="Address"
 							              @bind-Value="CurrentOwner.Address" For="@(() => CurrentOwner.Address)"/>
 						</MudItem>
-						<MudItem xs="4">
+						<MudItem xs="12" md="4">
 							<MudSelect T="string" Label="State" @bind-Value="CurrentOwner.State" @bind-SelectedValue="CurrentOwner.State" Required="true" RequiredError="Select State">
 								@foreach (var state in states)
 								{
@@ -35,19 +35,19 @@
 								}
 							</MudSelect>
 						</MudItem>
-						<MudItem xs="4">
+						<MudItem xs="12" md="4">
 							<MudTextField Label="City" Class="mt-1"
 							              @bind-Value="CurrentOwner.City" For="@(() => CurrentOwner.City)"/>
 						</MudItem>
-						<MudItem xs="4">
-							<MudTextField Mask="@(new PatternMask("000000000"))" Label="Zip/Postal Code" Class="mt-1"
+						<MudItem xs="12" md="4">
+							<MudTextField Mask="@(new PatternMask("000000000"))" Label="Zip Code" Class="mt-1"
 							              @bind-Value="CurrentOwner.Zipcode" For="@(() => CurrentOwner.Zipcode)"/>
 						</MudItem>
-						<MudItem xs="4">
-							<MudDatePicker Label="Arrival Date"/>
+						<MudItem xs="12" md="12">
+							<MudDatePicker Label="Arrival"/>
 						</MudItem>
-						<MudItem xs="8">
-							<MudDateRangePicker Label="Ski Dates" @bind-DateRange="@CurrentOwner.SkiDateRange" PlaceholderStart="First Ski Day" PlaceholderEnd="Last Ski Day" Required="true" RequiredError="Choose Ski Dates"/>
+						<MudItem xs="12" md="12">
+							<MudDateRangePicker Label="Ski Dates" @bind-DateRange="@CurrentOwner.SkiDateRange" PlaceholderStart="First Day" PlaceholderEnd="Last Day" Required="true" RequiredError="Choose Ski Dates"/>
 						</MudItem>
 					</MudGrid>
 				</MudCardContent>

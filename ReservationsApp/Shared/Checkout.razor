@@ -21,15 +21,15 @@
 						<MudText Align="Align.Left">Address: <b>@CurrentOwner.Address</b></MudText>
 						<MudDivider/>
 					</MudItem>
-					<MudItem xs="6">
+					<MudItem xs="12">
 						<MudText Align="Align.Left">State: <b>@CurrentOwner.State</b></MudText>
 						<MudDivider />
 					</MudItem>
-					<MudItem xs="6">
+					<MudItem xs="12">
 						<MudText Align="Align.Left">City: <b>@CurrentOwner.City</b></MudText>
 						<MudDivider />
 					</MudItem>
-					<MudItem xs="6">
+					<MudItem xs="12"> 
 						<MudText Align="Align.Left">Postal Code: <b>@CurrentOwner.Zipcode</b></MudText>
 						<MudDivider />
 					</MudItem>
@@ -37,11 +37,11 @@
 						<MudText Align="Align.Left">Email: <b>@CurrentOwner.Email</b></MudText>
 						<MudDivider />
 					</MudItem>
-					<MudItem xs="6">
+					<MudItem xs="12">
 						<MudText Align="Align.Left">Arrival Date: @CurrentOwner.ArrivalDate.ToString("MM/dd/yyyy")</MudText>
 						<MudDivider />
 					</MudItem>
-					<MudItem xs="6">
+					<MudItem xs="12">
 						<MudText Align="Align.Left">Rental Dates: @skiStart.ToString("MM/dd/yyyy") <b>To</b> @skiEnd.ToString("MM/dd/yyyy") </MudText>
 						<MudDivider />
 					</MudItem>
@@ -49,7 +49,7 @@
 			</MudItem>
 			<MudItem xs="5">
 				<MudText Typo="Typo.h5" GutterBottom="true">Estimated Prices</MudText>
-				<MudPaper Class="d-flex flex-column" Style="height: 100%;" Outlined="true">
+				<MudPaper Style="height: 100%;" Outlined="true">
 					<MudList Clickable="false">
 						@foreach (var skier in CurrentOwner.SkierList)
 						{
@@ -76,16 +76,20 @@
 					<div class="mt-auto">
 						<MudDivider/>
 						<div class="d-flex px-4">
-							<MudText>subtotal:</MudText>
-							<MudText Typo="Typo.caption" Class="ml-auto">@total.ToString("C0")</MudText>
+							<MudText>subtotal</MudText>
+							<MudText Align="Align.Left" Typo="Typo.caption" Class="ml-auto">@total.ToString("C0")</MudText>
 						</div>
 						<div class="d-flex px-4">
 							<MudText>online discount</MudText>
-							<MudText Typo="Typo.caption" Class="ml-auto">-@less.ToString("C0")</MudText>
+							<MudText Align="Align.Left" Typo="Typo.subtitle1" Class="ml-auto">-@less.ToString("C0")</MudText>
+						</div>
+						<div class="d-flex px-4">
+							<MudText>estimated tax<b>*</b></MudText>
+							<MudText Align="Align.Left" Typo="Typo.caption" Class="ml-auto">@salesTax.ToString("C0")</MudText>
 						</div>
 						<div class="d-flex px-4">
 							<MudText>total*</MudText>
-							<MudText Typo="Typo.subtitle1" Class="ml-auto"><b>@onlineTotal.ToString("C0")*</b></MudText>
+							<MudText Align="Align.Left" Typo="Typo.subtitle1" Class="ml-auto"><b>@onlineTotal.ToString("C0")*</b></MudText>
 						</div>
 					</div>
 				</MudPaper>
@@ -94,9 +98,11 @@
 	</MudPaper>
 	<MudGrid >
 		<MudItem xs="12">
+			<MudPaper Elevation="6">
 			<MudText Class="mt-8">
-				* Please note, total price is an estimation. Actual price may very depending on a number of factors including sales tax. Please contact us if you have questions regarding the pricing. 
-			</MudText>
+					<b>*</b> Please note, total price is an estimation. Actual price may very depending on a number of factors including sales tax, days skied, helmets, etc. Please contact us if you have questions regarding the pricing.
+				</MudText>
+			</MudPaper>
 		</MudItem>
 		<MudItem xs="12">
 			<MudPaper>
@@ -116,13 +122,14 @@
 </MudContainer>
 
 @code {
-[Parameter]
-public Owner CurrentOwner { get; set; }
+	[Parameter]
+	public Owner CurrentOwner { get; set; }
 
 	string successMessage = String.Empty;
 	int total = 0;
 	int less = 0;
-	int onlineTotal = 0;
+	double onlineTotal = 0;
+	double salesTax = 0;
 	DateTime skiStart = DateTime.Now;
 	DateTime skiEnd = DateTime.Now;
 
@@ -165,11 +172,13 @@ public Owner CurrentOwner { get; set; }
 
 	}
 
-	public int GetTotal(int subtotal)
+	public double GetTotal(int subtotal)
 	{
-		var returnTotal = 0;
+		double returnTotal = 0;
 		less = subtotal / 10;
 		returnTotal = subtotal - less;
+		salesTax = returnTotal * .08;
+		returnTotal += salesTax;
 		return returnTotal;
 	}
 

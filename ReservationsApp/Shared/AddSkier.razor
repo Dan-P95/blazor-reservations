@@ -10,74 +10,79 @@
 			<MudCard>
 				<MudCardContent>
 					<MudGrid>
-						<MudItem xs="12">
+						<MudItem  xs="12" md="6">
 							<MudTextField Label="Full Name"
 							              @bind-Value="CurrentSkier.Name" For="@(() => CurrentSkier.Name)"/>
 						</MudItem>
-						<MudItem xs="4">
+						<MudItem  xs="6" md="4">
 							<MudTextField Label="Height" Class="mt-2"
 							              @bind-Value="CurrentSkier.Height" For="@(() => CurrentSkier.Height)"/>
 						</MudItem>
-						<MudItem xs="4">
+						<MudItem xs="6" md="4">
 							<MudTextField Mask="@(new PatternMask("0000"))" Label="Weight" Class="mt-2"
 							              @bind-Value="CurrentSkier.Weight" For="@(() => CurrentSkier.Weight)"/>
 						</MudItem>
-						<MudItem xs="4">
+						<MudItem xs="6" md="4">
 							<MudNumericField HideSpinButtons="true" @bind-Value="CurrentSkier.Age" Label="Age" Variant="Variant.Text" Min="0" Max="100"/>
 						</MudItem>
-						<MudItem xs="3">
+						<MudItem xs="6" md="4">
 							<MudNumericField HideSpinButtons="true" @bind-Value="CurrentSkier.ShoeSize" Label="Shoe/Boot Size" Variant="Variant.Text" Min="0" Max="50"/>
 						</MudItem>
-						<MudItem xs="4">
+						<MudItem xs="12" md="12">
 							<MudText Typo="Typo.caption">Damage Insurance</MudText>
 							<MudRadioGroup @bind-SelectedOption="CurrentSkier.Insurance" Required="true" RequiredError="Choose one">
 								<MudRadio Option="@(true)">Yes</MudRadio>
 								<MudRadio Option="@(false)">No</MudRadio>
 							</MudRadioGroup>
+							<MudDivider/>
 						</MudItem>
-						<MudItem xs="5">
+						<MudItem xs="12" md="12">
 							<MudText Typo="Typo.caption">Ski or Snowboard</MudText>
 							<MudRadioGroup T="string" @bind-SelectedOption="CurrentSkier.SkiOrBoard" Required="true" RequiredError="Choose one">
 								<MudRadio T="string" Option="@("ski")">Ski</MudRadio>
 								<MudRadio T="string" Option="@("board")">Snowboard</MudRadio>
 							</MudRadioGroup>
+							<MudDivider />
 						</MudItem>
-						<MudItem xs="12">
-							<MudText Typo="Typo.caption">Skier Type</MudText> <MudIcon Icon="@Icons.Material.Filled.Help" @onclick="SkierTypeHelper"></MudIcon>
+						<MudItem xs="12" md="12">
 							<MudText Typo="Typo.subtitle1" Style=@($"background:#FFEBEE;") @onclick="SkierTypeHelper"> @skierTypeHelper </MudText>
+							<MudText Typo="Typo.caption">Skier Type</MudText> <MudIcon Icon="@Icons.Material.Filled.Help" @onclick="SkierTypeHelper"></MudIcon>
+							
 							<MudRadioGroup  @bind-SelectedOption="CurrentSkier.SkierType" Required="true" RequiredError="Choose one">
 								<MudRadio Option="@(1)">I</MudRadio>
 								<MudRadio Option="@(2)">II</MudRadio>
 								<MudRadio Option="@(3)">III</MudRadio>
 							</MudRadioGroup>
+							<MudDivider />
 						</MudItem>
-						<MudItem xs="12">
+						<MudItem xs="12" md="12">
+							<MudText Typo="Typo.caption">Ski Package <MudIcon Icon="@Icons.Material.Filled.Help" /></MudText>
 							@if (CurrentSkier.SkiOrBoard == "ski")
 							{
-								<MudText Typo="Typo.caption">Ski Package <MudIcon Icon="@Icons.Material.Filled.Help"/></MudText>
 								<MudRadioGroup @onclick="SetPrice" @bind-SelectedOption="CurrentSkier.SkiPackage" Required="true" RequiredError="Choose one">
 									<MudRadio Option="@("sport")">Sport</MudRadio>
 									<MudRadio Option="@("performance")">Performance</MudRadio>
 									<MudRadio Option="@("demo")">Demo</MudRadio>
 								</MudRadioGroup>
+								<MudDivider />
 							}
 							@if (CurrentSkier.SkiOrBoard == "board")
 							{
-								<MudText Typo="Typo.caption">Snowboard Package<MudIcon Icon="@Icons.Material.Filled.Help"/></MudText>
+						
 								<MudRadioGroup @onclick="SetPrice" @bind-SelectedOption="CurrentSkier.SkiPackage" Required="true" RequiredError="Choose one" Validation="CurrentSkier.SkiPackage">
 									<MudRadio Option="@("board only")">Snowboard Only</MudRadio>
 									<MudRadio Option="@("board package")">Snowboard and Boots</MudRadio>
 								</MudRadioGroup>
+								<MudDivider />
 							}
 						</MudItem>
-						<MudItem xs="4">
+						<MudItem xs="12">
 							<PricesButton />
 						</MudItem>
-						
 					</MudGrid>
 				</MudCardContent>
-				<MudCardActions Class="d-flex justify-center">
-					<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" DisableElevation="true" Style="@($"background:#f31515; color:#fff;")" Size="Size.Large" Class="mt-2">Add Skier</MudButton>
+				<MudCardActions>
+					<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Style="@($"background:#f31515; color:#fff;")" Size="Size.Large" Class="mt-2">Add Skier</MudButton>
 				</MudCardActions>
 				<MudCardContent>
 					@if (alert)
