@@ -27,9 +27,9 @@
 									<MudText Typo="Typo.h5" Align="Align.Center">Account Information</MudText>
 									<MudDivider/>
 								</MudItem>
-								<MudItem xs="12">
+								@*<MudItem xs="12">
 									<MudButton OnClick="FillData">FILL</MudButton>
-								</MudItem>
+								</MudItem>*@
 								<MudItem xs="12">
 									<AddOwner CurrentOwner="CurrentOwner" AddNewOwnerCallback="AddNewOwner"></AddOwner>
 								</MudItem>
@@ -45,11 +45,14 @@
 								<MudItem>
 									<AddSkier CurrentSkier="CurrentSkier" AddNewSkierCallback="AddNewSkier"/>
 								</MudItem>
-								<MudItem xs="10">
+								<MudItem xs="5">
 									
 								</MudItem>
-								<MudItem xs="2" >
-									<MudButton OnClick="enableThirdTab" Variant="Variant.Filled" Color="Color.Primary" Class="align-items: flex-end;">Continue</MudButton>
+								<MudItem xs="7" >
+									<MudButton OnClick="enableThirdTab" Variant="Variant.Filled" Color="Color.Primary">Continue</MudButton>
+								</MudItem>
+								<MudItem xs="12">
+									<MudDivider></MudDivider>
 								</MudItem>
 							</MudGrid>
 						</MudTabPanel>
@@ -181,8 +184,8 @@
 	{
 		UpdateSkierList();
 		CurrentSkier = new Skier();
-		sizing = 8;
-		secondTabDisabled = false;
+		//sizing = 8;
+		//secondTabDisabled = false;
 	}
 	public void AddNewOwner()
 	{
@@ -229,8 +232,8 @@
 
 	void enableSecondTab()
 	{
-		//sizing = 8;
-		//secondTabDisabled = false;
+		sizing = 8;
+		secondTabDisabled = false;
 		secondTabPanel.Disabled = false;
 		mainMudTabs.ActivatePanel(1);
 

@@ -16,7 +16,7 @@
 							              @bind-Value="CurrentOwner.LastName" For="@(() => CurrentOwner.LastName)"/>
 						</MudItem>
 						<MudItem xs="12" md="4">
-							<MudTextField HelperText="10 Digit Phone Number" Mask="@(new PatternMask("000 000 0000"))" Label="Phone" Class="mt-2"
+							<MudTextField HelperText="10 Digit Phone Number" Label="Phone" Class="mt-2"
 							              @bind-Value="CurrentOwner.Phone" For="@(() => CurrentOwner.Phone)"/>
 						</MudItem>
 						<MudItem xs="12" md="4">
@@ -40,14 +40,14 @@
 							              @bind-Value="CurrentOwner.City" For="@(() => CurrentOwner.City)"/>
 						</MudItem>
 						<MudItem xs="12" md="4">
-							<MudTextField Mask="@(new PatternMask("000000000"))" Label="Zip Code" Class="mt-1"
+							<MudTextField Label="Zip Code" Class="mt-1"
 							              @bind-Value="CurrentOwner.Zipcode" For="@(() => CurrentOwner.Zipcode)"/>
 						</MudItem>
 						<MudItem xs="12" md="12">
-							<MudDatePicker Label="Arrival"/>
+							<MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Arrival" />
 						</MudItem>
 						<MudItem xs="12" md="12">
-							<MudDateRangePicker Label="Ski Dates" @bind-DateRange="@CurrentOwner.SkiDateRange" PlaceholderStart="First Day" PlaceholderEnd="Last Day" Required="true" RequiredError="Choose Ski Dates"/>
+							<MudDateRangePicker PickerVariant="PickerVariant.Dialog" Label="Ski Dates" @bind-DateRange="@CurrentOwner.SkiDateRange" PlaceholderStart="First Day" PlaceholderEnd="Last Day" Required="true" RequiredError="Choose Ski Dates"/>
 						</MudItem>
 					</MudGrid>
 				</MudCardContent>
