@@ -5,7 +5,7 @@
 <MudContainer MaxWidth="MaxWidth.Medium">
 	<MudPaper Class="pa-4"> 
 		<MudGrid>
-			<MudItem xs="6">
+			<MudItem xs="5">
 				<MudText Typo="Typo.h5" GutterBottom="true">Reservation Details</MudText>
 				<MudDivider />
 				<MudGrid Spacing="2">
@@ -47,7 +47,7 @@
 					</MudItem>
 				</MudGrid>
 			</MudItem>
-			<MudItem xs="6">
+			<MudItem xs="7">
 				<MudText Typo="Typo.h5" GutterBottom="true">Estimated Prices</MudText>
 				<MudPaper Style="height: 100%;" Outlined="true">
 					<MudList Clickable="false">
@@ -58,7 +58,7 @@
 								<MudListItem>
 									<div class="d-flex">
 										<MudText>@skier.Name</MudText>
-										<MudText Inline="true" Class="ml-auto">@skier.TotalRentalPrice.ToString("C0")</MudText>
+										<MudText Inline="true" Class="ml-auto">@skier.TotalRentalPrice.ToString()</MudText>
 									</div>
 								</MudListItem>
 							}
@@ -67,7 +67,7 @@
 								<MudListItem>
 									<div class="d-flex">
 										<MudText>@skier.Name</MudText>
-										<MudText Inline="true" Class="ml-auto">@skier.TotalRentalPrice.ToString("C0")</MudText>
+										<MudText Inline="true" Class="ml-auto">@skier.TotalRentalPrice.ToString()</MudText>
 									</div>
 								</MudListItem>
 							}
@@ -78,19 +78,20 @@
 						<div class="d-flex px-4">
 							<MudText Typo="Typo.caption" Align="Align.Left">subtotal</MudText>
 							<MudDivider Vertical="true"/>
-							<MudText Align="Align.Right" Typo="Typo.caption" Class="ml-auto">@total.ToString("C0")</MudText>
+							<MudText Align="Align.Right" Typo="Typo.caption" Class="ml-auto">@total.ToString()</MudText>
 						</div>
 						<div class="d-flex px-4">
 							<MudText Typo="Typo.caption" Align="Align.Left">discount</MudText>
-							<MudText Align="Align.Right" Typo="Typo.subtitle1" Class="ml-auto">-@less.ToString("C0")</MudText>
+							<MudText Align="Align.Right" Typo="Typo.subtitle1" Class="ml-auto">-@less.ToString()</MudText>
 						</div>
 						<div class="d-flex px-4">
 							<MudText Typo="Typo.caption" Align="Align.Left">tax<b>*</b></MudText>
-							<MudText Align="Align.Right" Typo="Typo.caption" Class="ml-auto">@salesTax.ToString("C0")</MudText>
+							<MudText Align="Align.Right" Typo="Typo.caption" Class="ml-auto">@salesTax.ToString()</MudText>
 						</div>
 						<div class="d-flex px-4">
 							<MudText Typo="Typo.caption" Align="Align.Left">total*</MudText>
-							<MudText Align="Align.Right" Typo="Typo.subtitle1" Class="ml-auto"><b>@onlineTotal.ToString("C0")*</b></MudText>
+							<MudText Align="Align.Right" Typo="Typo.subtitle1" Class="ml-auto"><b>@String.Format(
+								"{0:0.00}", @onlineTotal.ToString())*</b></MudText>
 						</div>
 					</div>
 				</MudPaper>
